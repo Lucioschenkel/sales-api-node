@@ -1,11 +1,15 @@
 import Redis, { Redis as RedisClient } from 'ioredis';
 import cache from '@config/cache';
 
-export default class RedisCache {
+class RedisCache {
   private client: RedisClient;
+  private connected = false;
 
   constructor() {
-    this.client = new Redis(cache.config.redis);
+    if (!this.connected) {
+      this.client = new Redis(cache.config.redis);
+      this.connected = true;
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
@@ -29,3 +33,5 @@ export default class RedisCache {
     await this.client.del(key);
   }
 }
+
+export default new RedisCache();
